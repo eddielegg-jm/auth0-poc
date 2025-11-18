@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { goto } from '$app/navigation';
 
 	export let data: PageData;
 
@@ -9,6 +10,7 @@
 	let inviteLoading = false;
 	let inviteError = '';
 	let inviteSuccess = '';
+	let selectingOrg = false;
 
 	function openInviteModal(orgId: string) {
 		selectedOrgId = orgId;
@@ -70,6 +72,33 @@
 		}
 	}
 
+	async function handleSelectOrganization(orgId: string) {
+		selectingOrg = true;
+
+		try {
+			const response = await fetch('/api/select-organization', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ organizationId: orgId })
+			});
+
+			if (response.ok) {
+				// Refresh page to load with organization context
+				goto('/dashboard', { invalidateAll: true });
+			} else {
+				const result = await response.json();
+				alert(result.error || 'Failed to select organization');
+				selectingOrg = false;
+			}
+		} catch (err) {
+			console.error('Error selecting organization:', err);
+			alert('An error occurred. Please try again.');
+			selectingOrg = false;
+		}
+	}
+
 	async function handleLogout() {
 		try {
 			const response = await fetch('/api/auth/logout', {
@@ -103,25 +132,65 @@
 	</nav>
 
 	<div class="container">
-		<div class="user-section">
-			<div class="user-card">
-				{#if data.user.picture}
-					<img src={data.user.picture} alt={data.user.name} class="avatar" />
-				{:else}
-					<div class="avatar-placeholder">
-						{data.user.name?.charAt(0) || 'U'}
+		{#if data.requiresOrgSelection}
+			<!-- Organization Selection UI -->
+			<div class="org-selection-container">
+				<div class="org-selection-card">
+					<h1>Select Your Organization</h1>
+					<p class="subtitle">You belong to multiple organizations. Please select one to continue.</p>
+
+					<div class="org-selection-list">
+						{#each data.organizations as org}
+							<button
+								class="org-selection-item"
+								on:click={() => handleSelectOrganization(org.id)}
+								disabled={selectingOrg}
+							>
+								{#if org.branding?.logo_url}
+									<img src={org.branding.logo_url} alt={org.display_name} class="org-logo" />
+								{:else}
+									<div class="org-logo-placeholder">
+										{org.display_name?.charAt(0) || 'O'}
+									</div>
+								{/if}
+								<div class="org-selection-info">
+									<h3>{org.display_name}</h3>
+									<p>@{org.name}</p>
+								</div>
+								<svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+								</svg>
+							</button>
+						{/each}
 					</div>
-				{/if}
-				<div class="user-info">
-					<h1>{data.user.name}</h1>
-					<p class="email">{data.user.email}</p>
-					<p class="user-id">ID: {data.user.sub}</p>
 				</div>
 			</div>
-		</div>
+		{:else}
+			<!-- Normal Dashboard UI -->
+			<div class="user-section">
+				<div class="user-card">
+					{#if data.user.picture}
+						<img src={data.user.picture} alt={data.user.name} class="avatar" />
+					{:else}
+						<div class="avatar-placeholder">
+							{data.user.name?.charAt(0) || 'U'}
+						</div>
+					{/if}
+					<div class="user-info">
+						<h1>{data.user.name}</h1>
+						<p class="email">{data.user.email}</p>
+						<p class="user-id">ID: {data.user.sub}</p>
+						{#if data.user.org_name}
+							<p class="org-badge">
+								<span class="badge">{data.user.org_name}</span>
+							</p>
+						{/if}
+					</div>
+				</div>
+			</div>
 
-		<div class="organizations-section">
-			<h2>Your Organizations</h2>
+			<div class="organizations-section">
+				<h2>Your Organizations</h2>
 
 			{#if data.organizations.length === 0}
 				<div class="empty-state">
@@ -166,6 +235,7 @@
 				</div>
 			{/if}
 		</div>
+		{/if}
 	</div>
 </div>
 
@@ -573,5 +643,115 @@
 	.submit-btn:disabled {
 		opacity: 0.5;
 		cursor: not-allowed;
+	}
+
+	/* Organization Selection Styles */
+	.org-selection-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		min-height: calc(100vh - 80px);
+		padding: 40px 20px;
+	}
+
+	.org-selection-card {
+		background: white;
+		border-radius: 12px;
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+		padding: 48px;
+		width: 100%;
+		max-width: 600px;
+	}
+
+	.org-selection-card h1 {
+		margin: 0 0 8px 0;
+		font-size: 28px;
+		color: #1a1a1a;
+		text-align: center;
+	}
+
+	.subtitle {
+		margin: 0 0 32px 0;
+		font-size: 16px;
+		color: #666;
+		text-align: center;
+	}
+
+	.org-selection-list {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.org-selection-item {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+		padding: 20px;
+		background: white;
+		border: 2px solid #e5e5e5;
+		border-radius: 8px;
+		cursor: pointer;
+		transition: all 0.2s;
+		text-align: left;
+		width: 100%;
+	}
+
+	.org-selection-item:hover:not(:disabled) {
+		border-color: #667eea;
+		background: #f8f9ff;
+	}
+
+	.org-selection-item:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+
+	.org-selection-item .org-logo,
+	.org-selection-item .org-logo-placeholder {
+		width: 48px;
+		height: 48px;
+		flex-shrink: 0;
+	}
+
+	.org-selection-info {
+		flex: 1;
+	}
+
+	.org-selection-info h3 {
+		margin: 0 0 4px 0;
+		font-size: 18px;
+		color: #1a1a1a;
+	}
+
+	.org-selection-info p {
+		margin: 0;
+		font-size: 14px;
+		color: #666;
+	}
+
+	.arrow-icon {
+		width: 24px;
+		height: 24px;
+		color: #999;
+		flex-shrink: 0;
+	}
+
+	.org-selection-item:hover:not(:disabled) .arrow-icon {
+		color: #667eea;
+	}
+
+	.org-badge {
+		margin-top: 8px;
+	}
+
+	.badge {
+		display: inline-block;
+		padding: 4px 12px;
+		background: #667eea;
+		color: white;
+		border-radius: 12px;
+		font-size: 12px;
+		font-weight: 500;
 	}
 </style>

@@ -10,10 +10,12 @@ This POC demonstrates core Auth0 capabilities:
 ✅ **OIDC Authentication with PKCE**: Secure authorization code flow with proof key for code exchange  
 ✅ **Auth0 Home Realm Discovery**: Auth0 automatically detects IDP and Organization from email domain  
 ✅ **Auth0 Organizations**: Multi-tenant architecture using Auth0's Organizations feature  
+✅ **Flexible Organization Selection**: Auto-selects single org or prompts for selection with multiple orgs  
 ✅ **Secure Session Management**: JWT-based sessions with HTTP-only cookies
 
 ### Organization Management
 ✅ **Organization Dashboard**: View user profile and organization memberships (from Auth0 as source of truth)  
+✅ **Smart Organization Detection**: Automatically assigns organization based on user membership count  
 ✅ **Cross-Organization Invitations**: Invite users to join organizations  
 ✅ **Management API Integration**: Demonstrates Auth0 Management API for organization operations
 
@@ -289,6 +291,7 @@ src/
 - **[SETUP.md](./SETUP.md)** - Initial setup and configuration guide
 - **[AUTH0_CHECKLIST.md](./AUTH0_CHECKLIST.md)** - Complete Auth0 configuration checklist
 - **[AUTH0_AUTO_DETECTION.md](./AUTH0_AUTO_DETECTION.md)** - How Auth0 auto-detects organizations and IDPs
+- **[ORGANIZATION_SELECTION.md](./ORGANIZATION_SELECTION.md)** - Organization selection flow and auto-detection
 - **[WHAT_THIS_DEMONSTRATES.md](./WHAT_THIS_DEMONSTRATES.md)** - Overview of Auth0 features demonstrated
 - **[SSO_GUIDE.md](./SSO_GUIDE.md)** - Single Sign-On implementation details
 - **[DEPLOYMENT.md](./DEPLOYMENT.md)** - GitHub deployment and secrets management

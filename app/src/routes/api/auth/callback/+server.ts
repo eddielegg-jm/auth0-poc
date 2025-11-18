@@ -63,14 +63,14 @@ export const GET: RequestHandler = async (event) => {
 
 		const userInfo = await userInfoResponse.json();
 
-		// Store session
+		// Store basic session (without org initially)
 		setSession(event, {
 			user: {
 				sub: userInfo.sub,
 				email: userInfo.email,
 				name: userInfo.name,
 				picture: userInfo.picture,
-				org_id: userInfo.org_id,
+				org_id: userInfo.org_id, // May be undefined if no org in token
 				org_name: userInfo.org_name
 			},
 			accessToken: tokens.access_token,
@@ -86,7 +86,13 @@ export const GET: RequestHandler = async (event) => {
 		const returnTo = cookies.get('auth_return_to') || '/dashboard';
 		cookies.delete('auth_return_to', { path: '/' });
 
-		// Redirect to the original destination or dashboard
+		// If user logged in with an organization already, redirect directly
+		if (userInfo.org_id) {
+			throw redirect(303, returnTo);
+		}
+
+		// Otherwise, check which organizations the user belongs to
+		// This will be handled by the dashboard or a dedicated org-selection page
 		throw redirect(303, returnTo);
 	} catch (error) {
 		if (error instanceof Response && error.status >= 300 && error.status < 400) {
