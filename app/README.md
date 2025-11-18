@@ -4,11 +4,26 @@ This is a proof of concept application demonstrating Auth0 integration with Svel
 
 ## Features
 
+### Core Authentication
 ✅ **Email Domain-Based IDP Selection**: Automatically routes users to the appropriate Identity Provider based on their email domain  
 ✅ **Auth0 Organizations**: Leverages Auth0 Organizations for multi-tenancy management  
 ✅ **OIDC Authentication**: Implements secure OIDC authentication flow with PKCE  
+✅ **Secure Session Management**: JWT-based sessions with HTTP-only cookies
+
+### Multi-Tenancy
 ✅ **Organization Dashboard**: Displays user information and organization details  
 ✅ **Cross-Organization Invitations**: Allows users to invite members from different organizations  
+✅ **User Creation via Management API**: Create users and assign to organizations programmatically
+
+### SSO & Internal Apps
+✅ **Single Sign-On (SSO)**: Seamless authentication across multiple internal applications  
+✅ **Internal App 1 (CRM)**: Example internal application with SSO enabled  
+✅ **Internal App 2 (Analytics)**: Another internal application demonstrating SSO
+
+### RBAC & Admin
+✅ **Application-Level RBAC**: Role-based access control independent of Auth0  
+✅ **Admin Console**: Protected admin interface for user and organization management  
+✅ **Permission Checks**: Fine-grained permissions for invitations and management  
 
 ## Prerequisites
 
@@ -240,6 +255,46 @@ pnpm run dev
 2. Check that organization IDs are correct
 3. Ensure the inviting user is a member of the organization
 4. Review Auth0 logs in the dashboard
+
+## Application Structure
+
+```
+src/
+├── lib/
+│   ├── config/
+│   │   └── auth0.ts           # Auth0 configuration & domain mappings
+│   ├── rbac/
+│   │   └── roles.ts           # RBAC implementation
+│   ├── server/
+│   │   ├── auth0.ts           # Management API client
+│   │   ├── auth-utils.ts      # Auth utilities
+│   │   ├── session.ts         # Session management
+│   │   └── user-management.ts # User creation & management
+│   └── stores/
+│       └── auth.ts            # Client-side auth store
+├── routes/
+│   ├── api/
+│   │   ├── auth/              # Authentication endpoints
+│   │   │   ├── callback/      # OAuth callback handler
+│   │   │   ├── login/         # Login initiation
+│   │   │   └── logout/        # Logout handler
+│   │   └── invite/            # User invitation API
+│   ├── admin/                 # Admin console (RBAC protected)
+│   ├── dashboard/             # Main dashboard
+│   ├── internal-app-1/        # CRM System (SSO enabled)
+│   └── internal-app-2/        # Analytics Platform (SSO enabled)
+└── app.html                   # HTML template
+```
+
+## Documentation
+
+- **[SETUP.md](./SETUP.md)** - Initial setup and configuration guide
+- **[AUTH0_CHECKLIST.md](./AUTH0_CHECKLIST.md)** - Complete Auth0 configuration checklist
+- **[DEPLOYMENT.md](./DEPLOYMENT.md)** - GitHub deployment and secrets management
+- **[VERCEL_DEPLOYMENT.md](./VERCEL_DEPLOYMENT.md)** - Vercel-specific deployment guide
+- **[SSO_GUIDE.md](./SSO_GUIDE.md)** - Single Sign-On implementation details
+- **[RBAC_GUIDE.md](./RBAC_GUIDE.md)** - Role-Based Access Control guide
+- **[PROJECT_SUMMARY.md](./PROJECT_SUMMARY.md)** - Technical architecture overview
 
 ## Production Deployment
 

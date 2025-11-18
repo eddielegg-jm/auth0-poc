@@ -45,16 +45,25 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		});
 
 		// Add connection if we can determine it from email domain
+		// This is optional - Auth0 can auto-detect via Home Realm Discovery
 		const connection = getConnectionForEmail(email);
 		if (connection) {
 			params.set('connection', connection);
 		}
 
 		// Add organization if we can determine it from email domain
+		// This is optional - Auth0 can auto-route to organization
+		// But explicitly setting it provides better UX and control
 		const organization = getOrganizationForEmail(email);
 		if (organization) {
 			params.set('organization', organization);
 		}
+		
+		// Note: If you want to let Auth0 auto-detect the organization entirely:
+		// 1. Remove the organization lookup above
+		// 2. Just pass login_hint with the email
+		// 3. Auth0 will route based on Organization Connections and email domain
+		// This works if you have Home Realm Discovery configured in Auth0
 
 		const authorizationUrl = `https://${auth0Config.domain}/authorize?${params.toString()}`;
 
