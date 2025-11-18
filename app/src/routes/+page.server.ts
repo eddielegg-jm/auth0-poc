@@ -16,7 +16,21 @@ export const load: ServerLoad = async (event) => {
 		return { error };
 	}
 
-	// No session and no error - redirect to Auth0 login
-	console.log('No session found, redirecting to login');
-	throw redirect(303, '/api/auth/login');
+	// Check for invitation or organization parameters
+	const invitation = event.url.searchParams.get('invitation');
+	const organization = event.url.searchParams.get('organization');
+	
+	// If invitation/organization params exist, preserve them in the redirect
+	let loginUrl = '/api/auth/login';
+	if (invitation || organization) {
+		const params = new URLSearchParams();
+		if (invitation) params.set('invitation', invitation);
+		if (organization) params.set('organization', organization);
+		loginUrl = `/api/auth/login?${params.toString()}`;
+		console.log('Invitation detected, redirecting with params:', loginUrl);
+	} else {
+		console.log('No session found, redirecting to login');
+	}
+
+	throw redirect(303, loginUrl);
 };

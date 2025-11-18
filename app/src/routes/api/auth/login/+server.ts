@@ -17,6 +17,10 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 	// Get return URL from query params (for standalone internal app access)
 	const returnTo = url.searchParams.get('returnTo') || '/dashboard';
 	const email = url.searchParams.get('email');
+	
+	// Get invitation/organization parameters (from Auth0 invitation links)
+	const invitation = url.searchParams.get('invitation');
+	const organization = url.searchParams.get('organization');
 
 	// Generate PKCE parameters
 	const state = generateState();
@@ -60,6 +64,18 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 		code_challenge: codeChallenge,
 		code_challenge_method: 'S256'
 	});
+
+	// Add invitation parameter if present (for accepting invitations)
+	if (invitation) {
+		params.set('invitation', invitation);
+		console.log('Adding invitation parameter:', invitation);
+	}
+
+	// Add organization parameter if present (for org-specific login)
+	if (organization) {
+		params.set('organization', organization);
+		console.log('Adding organization parameter:', organization);
+	}
 
 	// Add login_hint if email provided
 	if (email) {
