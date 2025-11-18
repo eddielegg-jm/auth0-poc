@@ -3,16 +3,20 @@ import { getSession } from '$lib/server/session';
 
 export const load: ServerLoad = async (event) => {
 	const session = getSession(event);
+	console.log('[Internal App 2] Session check:', session ? 'Session exists' : 'No session');
+	console.log('[Internal App 2] Current URL:', event.url.pathname + event.url.search);
 
 	if (!session || !session.user) {
 		// Redirect to login with return URL for standalone access
 		// Add a marker to detect when user returns via SSO
 		const returnUrl = encodeURIComponent('/internal-app-2?sso=true');
+		console.log('[Internal App 2] No session, redirecting to login with returnTo:', returnUrl);
 		throw redirect(303, `/api/auth/login?returnTo=${returnUrl}`);
 	}
 
 	// Check if this is an SSO redirect return
 	const ssoIndicator = event.url.searchParams.get('sso');
+	console.log('[Internal App 2] SSO indicator:', ssoIndicator);
 
 	return {
 		user: session.user,
