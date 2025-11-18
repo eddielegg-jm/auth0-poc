@@ -189,6 +189,54 @@
 				</div>
 			</div>
 
+			<!-- Internal Apps Section -->
+			<div class="internal-apps-section">
+				<h2>🚀 Test SSO with Internal Apps</h2>
+				<p class="section-subtitle">
+					Click these links to test Single Sign-On. You'll be automatically authenticated without re-entering credentials.
+				</p>
+				
+				<div class="apps-grid">
+					<a href="/internal-app-1" class="app-card">
+						<div class="app-icon">📊</div>
+						<div class="app-content">
+							<h3>CRM System</h3>
+							<p>Customer Relationship Management</p>
+							<div class="app-badge">
+								<span class="badge-dot"></span>
+								SSO Protected
+							</div>
+						</div>
+						<svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+						</svg>
+					</a>
+
+					<a href="/internal-app-2" class="app-card">
+						<div class="app-icon">📈</div>
+						<div class="app-content">
+							<h3>Analytics Platform</h3>
+							<p>Business Intelligence & Reports</p>
+							<div class="app-badge">
+								<span class="badge-dot"></span>
+								SSO Protected
+							</div>
+						</div>
+						<svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+						</svg>
+					</a>
+				</div>
+
+				<div class="sso-info">
+					<div class="info-icon">💡</div>
+					<div>
+						<strong>How SSO Works:</strong>
+						<p>When you click these links, Auth0 will check your existing session and automatically log you in without prompting for credentials. Watch for the green notification!</p>
+					</div>
+				</div>
+			</div>
+
 			<div class="organizations-section">
 				<h2>Your Organizations</h2>
 
@@ -387,6 +435,141 @@
 		color: #999;
 		font-size: 13px;
 		font-family: monospace;
+	}
+
+	/* Internal Apps Section */
+	.internal-apps-section {
+		margin-bottom: 48px;
+	}
+
+	.internal-apps-section h2 {
+		margin: 0 0 8px 0;
+		font-size: 24px;
+		color: #1a1a1a;
+	}
+
+	.section-subtitle {
+		margin: 0 0 24px 0;
+		color: #666;
+		font-size: 15px;
+	}
+
+	.apps-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		gap: 20px;
+		margin-bottom: 24px;
+	}
+
+	.app-card {
+		background: white;
+		border-radius: 12px;
+		padding: 24px;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+		display: flex;
+		align-items: center;
+		gap: 16px;
+		text-decoration: none;
+		color: inherit;
+		transition: all 0.2s ease;
+		border: 2px solid transparent;
+	}
+
+	.app-card:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+		border-color: #667eea;
+	}
+
+	.app-icon {
+		font-size: 48px;
+		flex-shrink: 0;
+	}
+
+	.app-content {
+		flex: 1;
+	}
+
+	.app-content h3 {
+		margin: 0 0 4px 0;
+		font-size: 18px;
+		color: #1a1a1a;
+	}
+
+	.app-content p {
+		margin: 0 0 8px 0;
+		color: #666;
+		font-size: 14px;
+	}
+
+	.app-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		padding: 4px 10px;
+		background: #e8f5e9;
+		color: #2e7d32;
+		border-radius: 12px;
+		font-size: 12px;
+		font-weight: 500;
+	}
+
+	.badge-dot {
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		background: #4caf50;
+		animation: pulse 2s infinite;
+	}
+
+	@keyframes pulse {
+		0%, 100% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0.5;
+		}
+	}
+
+	.arrow-icon {
+		width: 24px;
+		height: 24px;
+		color: #999;
+		flex-shrink: 0;
+		transition: transform 0.2s, color 0.2s;
+	}
+
+	.app-card:hover .arrow-icon {
+		transform: translateX(4px);
+		color: #667eea;
+	}
+
+	.sso-info {
+		background: linear-gradient(135deg, #e3f2fd 0%, #e1f5fe 100%);
+		border-radius: 12px;
+		padding: 20px;
+		display: flex;
+		gap: 16px;
+		border-left: 4px solid #2196f3;
+	}
+
+	.info-icon {
+		font-size: 24px;
+		flex-shrink: 0;
+	}
+
+	.sso-info strong {
+		display: block;
+		color: #1a1a1a;
+		margin-bottom: 4px;
+		font-size: 15px;
+	}
+
+	.sso-info p {
+		margin: 0;
+		color: #555;
+		font-size: 14px;
+		line-height: 1.5;
 	}
 
 	.organizations-section h2 {
