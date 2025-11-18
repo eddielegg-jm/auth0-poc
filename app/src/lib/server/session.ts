@@ -26,7 +26,9 @@ const COOKIE_OPTIONS = {
 };
 
 export function encryptSession(data: SessionData): string {
-	return jwt.sign(data, auth0Config.sessionSecret, { expiresIn: '7d' });
+	// Don't set expiresIn here since the payload might already have expiresAt
+	// The cookie maxAge will handle session expiration
+	return jwt.sign(data, auth0Config.sessionSecret);
 }
 
 export function decryptSession(token: string): SessionData | null {
