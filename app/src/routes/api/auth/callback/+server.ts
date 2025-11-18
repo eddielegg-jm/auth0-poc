@@ -95,11 +95,14 @@ export const GET: RequestHandler = async (event) => {
 
 		// Otherwise, check which organizations the user belongs to
 		// This will be handled by the dashboard or a dedicated org-selection page
+		console.log('No org_id in token, redirecting to:', returnTo);
 		throw redirect(303, returnTo);
 	} catch (error) {
+		// Re-throw redirects immediately without logging
 		if (error instanceof Response && error.status >= 300 && error.status < 400) {
 			throw error;
 		}
+		// Only log actual errors (not redirects)
 		console.error('Callback error:', error);
 		throw redirect(303, '/?error=authentication_failed');
 	}
