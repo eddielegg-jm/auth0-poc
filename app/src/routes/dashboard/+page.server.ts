@@ -10,14 +10,14 @@ export const load: ServerLoad = async (event) => {
 	}
 
 	try {
-		// Get user's organizations
+		// Fetch user's organizations from Auth0 (source of truth)
 		const organizations = await getUserOrganizations(session.user.sub);
 
-		// Get members for each organization
+		// Get member count for each organization
 		const orgsWithMembers = await Promise.all(
 			organizations.map(async (org) => {
 				const members = await getOrganizationMembers(org.id);
-				return { ...org, memberCount: members.length, members };
+				return { ...org, memberCount: members.length };
 			})
 		);
 

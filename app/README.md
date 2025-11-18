@@ -4,26 +4,24 @@ This is a proof of concept application demonstrating Auth0 integration with Svel
 
 ## Features
 
-### Core Authentication
-✅ **Email Domain-Based IDP Selection**: Automatically routes users to the appropriate Identity Provider based on their email domain  
-✅ **Auth0 Organizations**: Leverages Auth0 Organizations for multi-tenancy management  
-✅ **OIDC Authentication**: Implements secure OIDC authentication flow with PKCE  
+This POC demonstrates core Auth0 capabilities:
+
+### Authentication & Multi-Tenancy
+✅ **OIDC Authentication with PKCE**: Secure authorization code flow with proof key for code exchange  
+✅ **Email Domain-Based Routing**: Automatically routes users to their Identity Provider based on email domain  
+✅ **Auth0 Organizations**: Multi-tenant architecture using Auth0's Organizations feature  
 ✅ **Secure Session Management**: JWT-based sessions with HTTP-only cookies
 
-### Multi-Tenancy
-✅ **Organization Dashboard**: Displays user information and organization details  
-✅ **Cross-Organization Invitations**: Allows users to invite members from different organizations  
-✅ **User Creation via Management API**: Create users and assign to organizations programmatically
+### Organization Management
+✅ **Organization Dashboard**: View user profile and organization memberships (from Auth0 as source of truth)  
+✅ **Cross-Organization Invitations**: Invite users to join organizations  
+✅ **Management API Integration**: Demonstrates Auth0 Management API for organization operations
 
-### SSO & Internal Apps
-✅ **Single Sign-On (SSO)**: Seamless authentication across multiple internal applications  
-✅ **Internal App 1 (CRM)**: Example internal application with SSO enabled  
-✅ **Internal App 2 (Analytics)**: Another internal application demonstrating SSO
-
-### RBAC & Admin
-✅ **Application-Level RBAC**: Role-based access control independent of Auth0  
-✅ **Admin Console**: Protected admin interface for user and organization management  
-✅ **Permission Checks**: Fine-grained permissions for invitations and management  
+### Single Sign-On (SSO)
+✅ **Shared Authentication**: Single login provides access to multiple applications  
+✅ **Internal App 1 (CRM)**: Example internal application with SSO  
+✅ **Internal App 2 (Analytics)**: Second internal application demonstrating SSO  
+✅ **Standalone Access**: Internal apps can be accessed directly with Auth0 redirects  
 
 ## Prerequisites
 
@@ -293,7 +291,6 @@ src/
 - **[DEPLOYMENT.md](./DEPLOYMENT.md)** - GitHub deployment and secrets management
 - **[VERCEL_DEPLOYMENT.md](./VERCEL_DEPLOYMENT.md)** - Vercel-specific deployment guide
 - **[SSO_GUIDE.md](./SSO_GUIDE.md)** - Single Sign-On implementation details
-- **[RBAC_GUIDE.md](./RBAC_GUIDE.md)** - Role-Based Access Control guide
 - **[PROJECT_SUMMARY.md](./PROJECT_SUMMARY.md)** - Technical architecture overview
 
 ## Production Deployment

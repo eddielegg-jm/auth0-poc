@@ -5,7 +5,8 @@ export const load: ServerLoad = async (event) => {
 	const session = getSession(event);
 
 	if (!session || !session.user) {
-		throw redirect(303, '/');
+		// Redirect to login with return URL for standalone access
+		throw redirect(303, `/api/auth/login?returnTo=${encodeURIComponent('/internal-app-1')}`);
 	}
 
 	return {

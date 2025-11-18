@@ -82,8 +82,12 @@ export const GET: RequestHandler = async (event) => {
 		cookies.delete('auth_state', { path: '/' });
 		cookies.delete('auth_code_verifier', { path: '/' });
 
-		// Redirect to dashboard
-		throw redirect(303, '/dashboard');
+		// Get return URL from cookie (set during login for internal app access)
+		const returnTo = cookies.get('auth_return_to') || '/dashboard';
+		cookies.delete('auth_return_to', { path: '/' });
+
+		// Redirect to the original destination or dashboard
+		throw redirect(303, returnTo);
 	} catch (error) {
 		if (error instanceof Response && error.status >= 300 && error.status < 400) {
 			throw error;

@@ -132,13 +132,6 @@
 						<p>Internal App 2 - SSO enabled</p>
 					</div>
 				</a>
-				<a href="/admin" class="app-link">
-					<span>👑</span>
-					<div>
-						<strong>Admin Console</strong>
-						<p>Administrative features</p>
-					</div>
-				</a>
 			</div>
 		</div>
 	</div>

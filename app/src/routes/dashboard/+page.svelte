@@ -120,33 +120,6 @@
 			</div>
 		</div>
 
-		<div class="apps-section">
-			<h2>🔐 Internal Apps (SSO Enabled)</h2>
-			<div class="apps-grid">
-				<a href="/internal-app-1" class="app-link">
-					<span class="app-icon">📊</span>
-					<div>
-						<strong>CRM System</strong>
-						<p>Customer relationship management</p>
-					</div>
-				</a>
-				<a href="/internal-app-2" class="app-link">
-					<span class="app-icon">📈</span>
-					<div>
-						<strong>Analytics Platform</strong>
-						<p>Business intelligence & reporting</p>
-					</div>
-				</a>
-				<a href="/admin" class="app-link">
-					<span class="app-icon">👑</span>
-					<div>
-						<strong>Admin Console</strong>
-						<p>User & organization management</p>
-					</div>
-				</a>
-			</div>
-		</div>
-
 		<div class="organizations-section">
 			<h2>Your Organizations</h2>
 
@@ -565,56 +538,6 @@
 		display: flex;
 		gap: 12px;
 		justify-content: flex-end;
-	}
-
-	.apps-section {
-		margin-bottom: 48px;
-	}
-
-	.apps-section h2 {
-		font-size: 24px;
-		color: #1a1a1a;
-		margin: 0 0 24px 0;
-	}
-
-	.apps-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-		gap: 20px;
-	}
-
-	.app-link {
-		display: flex;
-		align-items: center;
-		gap: 16px;
-		padding: 20px;
-		background: white;
-		border-radius: 12px;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-		text-decoration: none;
-		transition: all 0.2s;
-	}
-
-	.app-link:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-	}
-
-	.app-icon {
-		font-size: 32px;
-	}
-
-	.app-link strong {
-		display: block;
-		color: #1a1a1a;
-		margin-bottom: 4px;
-		font-size: 16px;
-	}
-
-	.app-link p {
-		margin: 0;
-		color: #666;
-		font-size: 14px;
 	}
 
 	.cancel-btn,
