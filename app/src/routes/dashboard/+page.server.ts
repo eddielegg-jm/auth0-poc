@@ -66,6 +66,10 @@ export const load: ServerLoad = async (event) => {
 			requiresOrgSelection: false
 		};
 	} catch (error) {
+		// Re-throw redirects - they're not actually errors
+		if (error instanceof Response && error.status >= 300 && error.status < 400) {
+			throw error;
+		}
 		console.error('Error loading dashboard:', error);
 		return {
 			user: session.user,
