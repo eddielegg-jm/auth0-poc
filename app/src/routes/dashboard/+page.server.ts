@@ -11,7 +11,9 @@ export const load: ServerLoad = async (event) => {
 
 	try {
 		// Fetch user's organizations from Auth0 (source of truth)
+		console.log('Fetching organizations for user:', session.user.sub);
 		const organizations = await getUserOrganizations(session.user.sub);
+		console.log('Found organizations:', organizations.length);
 
 		// Handle organization selection logic
 		if (!session.user.org_id && organizations.length > 0) {

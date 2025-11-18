@@ -69,7 +69,9 @@ export interface Organization {
 
 export async function getUserOrganizations(userId: string): Promise<Organization[]> {
 	try {
+		console.log('Making Management API request for user organizations:', userId);
 		const orgs = await makeManagementRequest(`users/${encodeURIComponent(userId)}/organizations`);
+		console.log('Management API returned:', orgs);
 		return orgs;
 	} catch (error) {
 		console.error('Error fetching user organizations:', error);
