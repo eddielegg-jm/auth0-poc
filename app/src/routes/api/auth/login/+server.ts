@@ -18,6 +18,8 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 	const returnTo = url.searchParams.get('returnTo') || '/dashboard';
 	const email = url.searchParams.get('email');
 	
+	console.log('returnTo from query params:', returnTo);
+	
 	// Get invitation/organization parameters (from Auth0 invitation links)
 	const invitation = url.searchParams.get('invitation');
 	const organization = url.searchParams.get('organization');
@@ -53,6 +55,7 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 		path: '/',
 		maxAge: 60 * 10 // 10 minutes
 	});
+	console.log('Set auth_return_to cookie to:', returnTo);
 
 	// Build authorization URL
 	const params = new URLSearchParams({

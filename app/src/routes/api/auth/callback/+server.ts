@@ -84,10 +84,12 @@ export const GET: RequestHandler = async (event) => {
 
 		// Get return URL from cookie (set during login for internal app access)
 		const returnTo = cookies.get('auth_return_to') || '/dashboard';
+		console.log('returnTo from cookie in callback:', returnTo);
 		cookies.delete('auth_return_to', { path: '/' });
 
 		// If user logged in with an organization already, redirect directly
 		if (userInfo.org_id) {
+			console.log('User has org_id, redirecting to:', returnTo);
 			throw redirect(303, returnTo);
 		}
 
