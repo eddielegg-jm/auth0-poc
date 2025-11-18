@@ -6,9 +6,14 @@ let tokenExpiry: number = 0;
 async function getManagementToken(): Promise<string> {
 	// Check if we have a valid cached token
 	if (accessToken && Date.now() < tokenExpiry) {
+		console.log('Using cached Management API token');
 		return accessToken;
 	}
 
+	console.log('Fetching new Management API token');
+	console.log('Management Client ID:', auth0Config.managementClientId ? 'Set' : 'Missing');
+	console.log('Management Client Secret:', auth0Config.managementClientSecret ? 'Set' : 'Missing');
+	
 	// Get a new token
 	const response = await fetch(`https://${auth0Config.domain}/oauth/token`, {
 		method: 'POST',
@@ -21,7 +26,15 @@ async function getManagementToken(): Promise<string> {
 		})
 	});
 
+	if (!response.ok) {
+		const errorText = await response.text();
+		console.error('Failed to get Management API token:', response.status, errorText);
+		throw new Error(`Failed to get Management API token: ${errorText}`);
+	}
+
 	const data = await response.json();
+	console.log('Management API token received:', data.access_token ? 'Yes' : 'No');
+	
 	accessToken = data.access_token;
 	// Set expiry to 5 minutes before actual expiry
 	tokenExpiry = Date.now() + (data.expires_in - 300) * 1000;
@@ -30,6 +43,12 @@ async function getManagementToken(): Promise<string> {
 
 async function makeManagementRequest(endpoint: string, options: RequestInit = {}) {
 	const token = await getManagementToken();
+	
+	if (!token) {
+		throw new Error('Failed to obtain Management API token');
+	}
+	
+	console.log('Making request to:', `https://${auth0Config.domain}/api/v2/${endpoint}`);
 	const response = await fetch(`https://${auth0Config.domain}/api/v2/${endpoint}`, {
 		...options,
 		headers: {
@@ -41,6 +60,7 @@ async function makeManagementRequest(endpoint: string, options: RequestInit = {}
 
 	if (!response.ok) {
 		const error = await response.text();
+		console.error('Management API error:', response.status, error);
 		throw new Error(`Auth0 API error: ${error}`);
 	}
 
