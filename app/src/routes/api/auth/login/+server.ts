@@ -12,80 +12,76 @@ import {
  * Supports returnTo parameter to redirect after authentication
  */
 export const GET: RequestHandler = async ({ url, cookies }) => {
-	try {
-		// Get return URL from query params (for standalone internal app access)
-		const returnTo = url.searchParams.get('returnTo') || '/dashboard';
-		const email = url.searchParams.get('email');
+	console.log('Login GET handler called');
+	
+	// Get return URL from query params (for standalone internal app access)
+	const returnTo = url.searchParams.get('returnTo') || '/dashboard';
+	const email = url.searchParams.get('email');
 
-		// Generate PKCE parameters
-		const state = generateState();
-		const codeVerifier = generateCodeVerifier();
-		const codeChallenge = await generateCodeChallenge(codeVerifier);
+	// Generate PKCE parameters
+	const state = generateState();
+	const codeVerifier = generateCodeVerifier();
+	const codeChallenge = await generateCodeChallenge(codeVerifier);
+	
+	console.log('PKCE parameters generated, preparing redirect to Auth0');
 
-		// Store state, code verifier, and return URL in cookies
-		cookies.set('auth_state', state, {
-			httpOnly: true,
-			secure: process.env.NODE_ENV === 'production',
-			sameSite: 'lax',
-			path: '/',
-			maxAge: 60 * 10 // 10 minutes
-		});
+	// Store state, code verifier, and return URL in cookies
+	cookies.set('auth_state', state, {
+		httpOnly: true,
+		secure: process.env.NODE_ENV === 'production',
+		sameSite: 'lax',
+		path: '/',
+		maxAge: 60 * 10 // 10 minutes
+	});
 
-		cookies.set('auth_code_verifier', codeVerifier, {
-			httpOnly: true,
-			secure: process.env.NODE_ENV === 'production',
-			sameSite: 'lax',
-			path: '/',
-			maxAge: 60 * 10 // 10 minutes
-		});
+	cookies.set('auth_code_verifier', codeVerifier, {
+		httpOnly: true,
+		secure: process.env.NODE_ENV === 'production',
+		sameSite: 'lax',
+		path: '/',
+		maxAge: 60 * 10 // 10 minutes
+	});
 
-		cookies.set('auth_return_to', returnTo, {
-			httpOnly: true,
-			secure: process.env.NODE_ENV === 'production',
-			sameSite: 'lax',
-			path: '/',
-			maxAge: 60 * 10 // 10 minutes
-		});
+	cookies.set('auth_return_to', returnTo, {
+		httpOnly: true,
+		secure: process.env.NODE_ENV === 'production',
+		sameSite: 'lax',
+		path: '/',
+		maxAge: 60 * 10 // 10 minutes
+	});
 
-		// Build authorization URL
-		const params = new URLSearchParams({
-			client_id: auth0Config.clientId,
-			response_type: 'code',
-			redirect_uri: auth0Config.callbackUrl,
-			scope: 'openid profile email',
-			state,
-			code_challenge: codeChallenge,
-			code_challenge_method: 'S256'
-		});
+	// Build authorization URL
+	const params = new URLSearchParams({
+		client_id: auth0Config.clientId,
+		response_type: 'code',
+		redirect_uri: auth0Config.callbackUrl,
+		scope: 'openid profile email',
+		state,
+		code_challenge: codeChallenge,
+		code_challenge_method: 'S256'
+	});
 
-		// Add login_hint if email provided
-		if (email) {
-			params.set('login_hint', email);
+	// Add login_hint if email provided
+	if (email) {
+		params.set('login_hint', email);
 
-			// Optionally add connection if configured
-			// Otherwise Auth0 will use Home Realm Discovery to auto-detect
-			const connection = getConnectionForEmail(email);
-			if (connection) {
-				params.set('connection', connection);
-			}
-
-			// Let Auth0 automatically detect organization based on:
-			// - Email domain
-			// - Organization connections configuration
-			// - Home Realm Discovery settings
+		// Optionally add connection if configured
+		// Otherwise Auth0 will use Home Realm Discovery to auto-detect
+		const connection = getConnectionForEmail(email);
+		if (connection) {
+			params.set('connection', connection);
 		}
 
-		const authorizationUrl = `https://${auth0Config.domain}/authorize?${params.toString()}`;
-
-		throw redirect(302, authorizationUrl);
-	} catch (error) {
-		// Re-throw redirects - they're not actually errors
-		if (error instanceof Response && error.status >= 300 && error.status < 400) {
-			throw error;
-		}
-		console.error('Login error:', error);
-		throw redirect(302, '/?error=login_failed');
+		// Let Auth0 automatically detect organization based on:
+		// - Email domain
+		// - Organization connections configuration
+		// - Home Realm Discovery settings
 	}
+
+	const authorizationUrl = `https://${auth0Config.domain}/authorize?${params.toString()}`;
+
+	console.log('Redirecting to Auth0:', authorizationUrl);
+	throw redirect(302, authorizationUrl);
 };
 
 /**
