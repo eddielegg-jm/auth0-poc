@@ -1,7 +1,31 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { onMount } from 'svelte';
 
 	export let data: PageData;
+
+	let showSsoNotification = false;
+
+	onMount(() => {
+		// Show SSO notification if this was an SSO login
+		if (data.ssoLogin) {
+			showSsoNotification = true;
+			
+			// Clear the ?sso=true from URL without reload
+			const url = new URL(window.location.href);
+			url.searchParams.delete('sso');
+			window.history.replaceState({}, '', url);
+
+			// Auto-hide after 5 seconds
+			setTimeout(() => {
+				showSsoNotification = false;
+			}, 5000);
+		}
+	});
+
+	function dismissNotification() {
+		showSsoNotification = false;
+	}
 
 	async function handleLogout() {
 		try {
@@ -27,6 +51,19 @@
 	<title>Internal App 1 - CRM System</title>
 </svelte:head>
 
+{#if showSsoNotification}
+	<div class="sso-notification">
+		<div class="notification-content">
+			<div class="notification-icon">✅</div>
+			<div class="notification-text">
+				<strong>SSO Authentication Complete</strong>
+				<p>You were automatically signed in using your existing Auth0 session</p>
+			</div>
+			<button class="notification-close" on:click={dismissNotification}>×</button>
+		</div>
+	</div>
+{/if}
+
 <div class="internal-app">
 	<nav class="navbar">
 		<div class="nav-content">
@@ -45,11 +82,11 @@
 	<div class="container">
 		<div class="header">
 			<h1>🎯 Customer Relationship Management</h1>
-			<div class="sso-badge">
+			<div class="sso-badge {data.ssoLogin ? 'sso-active' : ''}">
 				<span>🔐</span>
 				<div>
-					<strong>Single Sign-On Active</strong>
-					<p>You were automatically signed in via SSO</p>
+					<strong>Single Sign-On {data.ssoLogin ? 'Completed' : 'Active'}</strong>
+					<p>{data.ssoLogin ? 'Just authenticated via Auth0 SSO' : 'Protected by Auth0 SSO'}</p>
 				</div>
 			</div>
 		</div>
@@ -239,6 +276,22 @@
 		background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
 		border-radius: 8px;
 		border: 2px solid #28a745;
+		transition: all 0.3s ease;
+	}
+
+	.sso-badge.sso-active {
+		background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+		border-color: #047857;
+		animation: ssoGlow 2s ease-in-out;
+	}
+
+	@keyframes ssoGlow {
+		0%, 100% {
+			box-shadow: 0 0 0 rgba(16, 185, 129, 0);
+		}
+		50% {
+			box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+		}
 	}
 
 	.sso-badge span {
@@ -251,10 +304,18 @@
 		margin-bottom: 4px;
 	}
 
+	.sso-badge.sso-active strong {
+		color: white;
+	}
+
 	.sso-badge p {
 		margin: 0;
 		color: #155724;
 		font-size: 14px;
+	}
+
+	.sso-badge.sso-active p {
+		color: rgba(255, 255, 255, 0.9);
 	}
 
 	.content-grid {
@@ -385,6 +446,82 @@
 		border-radius: 8px;
 		text-decoration: none;
 		transition: all 0.2s;
+	}
+
+	/* SSO Notification Styles */
+	.sso-notification {
+		position: fixed;
+		top: 20px;
+		right: 20px;
+		z-index: 1000;
+		animation: slideInRight 0.3s ease-out;
+	}
+
+	@keyframes slideInRight {
+		from {
+			transform: translateX(400px);
+			opacity: 0;
+		}
+		to {
+			transform: translateX(0);
+			opacity: 1;
+		}
+	}
+
+	.notification-content {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+		background: white;
+		padding: 20px 24px;
+		border-radius: 12px;
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+		border-left: 4px solid #10b981;
+		max-width: 400px;
+	}
+
+	.notification-icon {
+		font-size: 32px;
+		flex-shrink: 0;
+	}
+
+	.notification-text {
+		flex: 1;
+	}
+
+	.notification-text strong {
+		display: block;
+		color: #1a1a1a;
+		margin-bottom: 4px;
+		font-size: 16px;
+	}
+
+	.notification-text p {
+		margin: 0;
+		color: #666;
+		font-size: 14px;
+	}
+
+	.notification-close {
+		background: none;
+		border: none;
+		color: #999;
+		font-size: 28px;
+		cursor: pointer;
+		padding: 0;
+		width: 28px;
+		height: 28px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 4px;
+		transition: all 0.2s;
+		flex-shrink: 0;
+	}
+
+	.notification-close:hover {
+		background: #f5f5f5;
+		color: #666;
 	}
 
 	.app-link:hover {
