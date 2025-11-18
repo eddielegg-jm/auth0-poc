@@ -18,12 +18,13 @@ This is a focused demonstration of **Auth0's core capabilities** for multi-tenan
 
 **See:** `src/lib/server/auth0.ts` - `getUserOrganizations()` and `getOrganization()`
 
-### 3. **Email Domain-Based IDP Routing** ✅
-- Automatic Identity Provider selection based on email domain
-- Seamless routing to Google, Microsoft, or other IDPs
-- Configurable domain-to-connection mappings
+### 3. **Auth0 Home Realm Discovery** ✅
+- Auth0 automatically detects the correct Identity Provider based on email domain
+- Auth0 automatically detects the correct Organization based on email domain
+- No manual domain-to-organization mapping needed in application code
+- Configured entirely within Auth0 dashboard
 
-**See:** `src/lib/server/auth-utils.ts` - `getConnectionForEmail()` and `getOrganizationForEmail()`
+**See:** `src/routes/api/auth/login/+server.ts` - Login flow with `login_hint` parameter
 
 ### 4. **Single Sign-On (SSO)** ✅
 - Shared authentication across multiple applications
@@ -76,7 +77,7 @@ SvelteKit Apps (SSO)
 ## Key Files
 
 ### Authentication Flow
-- `src/routes/api/auth/login/+server.ts` - Initiates OIDC flow with PKCE
+- `src/routes/api/auth/login/+server.ts` - Initiates OIDC flow with PKCE, uses `login_hint` for Auth0 auto-detection
 - `src/routes/api/auth/callback/+server.ts` - Handles OAuth callback and token exchange
 - `src/routes/api/auth/logout/+server.ts` - Clears session and logs out from Auth0
 
@@ -84,9 +85,9 @@ SvelteKit Apps (SSO)
 - `src/lib/server/session.ts` - JWT-based session with HTTP-only cookies
 
 ### Auth0 Integration
-- `src/lib/server/auth0.ts` - Management API client
-- `src/lib/server/auth-utils.ts` - Helper functions for IDP routing
-- `src/lib/config/auth0.ts` - Auth0 configuration
+- `src/lib/server/auth0.ts` - Management API client for organization operations
+- `src/lib/server/auth-utils.ts` - PKCE helper functions
+- `src/lib/config/auth0.ts` - Auth0 configuration (optional IDP connection mapping)
 
 ### UI
 - `src/routes/+page.svelte` - Login page

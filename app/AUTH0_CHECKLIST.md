@@ -31,18 +31,23 @@ Use this checklist to ensure your Auth0 account is properly configured for this 
 4. ☐ Enter **Display Name** (e.g., "Company One")
 5. ☐ Click **Create**
 6. ☐ Copy **Organization ID** (starts with `org_`)
-7. ☐ Add to `src/lib/config/auth0.ts` in `emailDomainToOrganization` mapping
 
 ### Configure Organization Connections:
-8. ☐ Go to organization's **Connections** tab
-9. ☐ Click **Enable Connections**
-10. ☐ Select your Identity Provider (Google, Microsoft, etc.)
-11. ☐ Click **Enable**
+7. ☐ Go to organization's **Connections** tab
+8. ☐ Click **Enable Connections**
+9. ☐ Select your Identity Provider (Google, Microsoft, etc.)
+10. ☐ Click **Enable**
+
+### Configure Email Domains (for Auto-Detection):
+11. ☐ Go to organization's **Settings** tab
+12. ☐ Under **Email Domains**, add the email domains for this organization (e.g., `company1.com`)
+13. ☐ This allows Auth0 to automatically route users to the correct organization based on their email
+14. ☐ No application-side configuration needed!
 
 ### Repeat for Additional Organizations:
-12. ☐ Create Organization 2
-13. ☐ Create Organization 3
-14. ☐ Configure connections for each
+15. ☐ Create Organization 2 with its email domains
+16. ☐ Create Organization 3 with its email domains
+17. ☐ Configure connections for each
 
 ## ☐ Step 3: Configure Identity Providers
 
@@ -54,7 +59,8 @@ Use this checklist to ensure your Auth0 account is properly configured for this 
 5. ☐ Enable **Email** and **Profile** scopes
 6. ☐ Click **Create**
 7. ☐ Note the connection name (e.g., "google-oauth2")
-8. ☐ Add to `src/lib/config/auth0.ts` in `emailDomainToConnection` mapping
+8. ☐ (Optional) Add to `src/lib/config/auth0.ts` in `emailDomainToConnection` if you want explicit mapping
+   - Otherwise, Auth0 will auto-detect based on organization connections
 
 ### For Microsoft OAuth:
 1. ☐ Go to **Authentication** → **Social**

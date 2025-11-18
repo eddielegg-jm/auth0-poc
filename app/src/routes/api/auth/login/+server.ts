@@ -4,8 +4,7 @@ import {
 	generateState,
 	generateCodeVerifier,
 	generateCodeChallenge,
-	getConnectionForEmail,
-	getOrganizationForEmail
+	getConnectionForEmail
 } from '$lib/server/auth-utils';
 
 /**
@@ -63,17 +62,17 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 		if (email) {
 			params.set('login_hint', email);
 
-			// Add connection if we can determine it from email domain
+			// Optionally add connection if configured
+			// Otherwise Auth0 will use Home Realm Discovery to auto-detect
 			const connection = getConnectionForEmail(email);
 			if (connection) {
 				params.set('connection', connection);
 			}
 
-			// Add organization if we can determine it from email domain
-			const organization = getOrganizationForEmail(email);
-			if (organization) {
-				params.set('organization', organization);
-			}
+			// Let Auth0 automatically detect organization based on:
+			// - Email domain
+			// - Organization connections configuration
+			// - Home Realm Discovery settings
 		}
 
 		const authorizationUrl = `https://${auth0Config.domain}/authorize?${params.toString()}`;
@@ -141,26 +140,18 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 			login_hint: email
 		});
 
-		// Add connection if we can determine it from email domain
-		// This is optional - Auth0 can auto-detect via Home Realm Discovery
+		// Optionally add connection if configured
+		// Otherwise Auth0 will use Home Realm Discovery to auto-detect
 		const connection = getConnectionForEmail(email);
 		if (connection) {
 			params.set('connection', connection);
 		}
 
-		// Add organization if we can determine it from email domain
-		// This is optional - Auth0 can auto-route to organization
-		// But explicitly setting it provides better UX and control
-		const organization = getOrganizationForEmail(email);
-		if (organization) {
-			params.set('organization', organization);
-		}
-		
-		// Note: If you want to let Auth0 auto-detect the organization entirely:
-		// 1. Remove the organization lookup above
-		// 2. Just pass login_hint with the email
-		// 3. Auth0 will route based on Organization Connections and email domain
-		// This works if you have Home Realm Discovery configured in Auth0
+		// Auth0 automatically detects organization based on:
+		// 1. Email domain configuration in Organization settings
+		// 2. Organization Connections (which IDPs are linked to which orgs)
+		// 3. Home Realm Discovery settings
+		// No need to pass organization parameter explicitly
 
 		const authorizationUrl = `https://${auth0Config.domain}/authorize?${params.toString()}`;
 

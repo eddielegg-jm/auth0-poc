@@ -14,18 +14,9 @@ export const auth0Config = {
 	publicClientId: publicEnv.PUBLIC_AUTH0_CLIENT_ID || env.AUTH0_CLIENT_ID || ''
 };
 
-// Email domain to IDP connection mapping
+// Email domain to IDP connection mapping (optional - Auth0 can auto-detect)
+// If removed, Auth0 will use Home Realm Discovery to automatically route users
 export const emailDomainToConnection: Record<string, string> = {
-	'company1.com': 'google-oauth2',
-	'company2.com': 'microsoft',
-	'company3.com': 'okta',
-	// Add more domain mappings as needed
-};
-
-// Email domain to organization mapping
-export const emailDomainToOrganization: Record<string, string> = {
-	'company1.com': 'org_company1',
-	'company2.com': 'org_company2',
-	'company3.com': 'org_company3',
-	// Add more organization mappings as needed
+	// Example: 'company1.com': 'google-oauth2',
+	// Leave empty to let Auth0 handle IDP detection automatically
 };

@@ -1,34 +1,16 @@
-import { env } from '$env/dynamic/private';
+import { emailDomainToConnection } from '$lib/config/auth0';
 
 export function getEmailDomain(email: string): string {
 	return email.split('@')[1]?.toLowerCase() || '';
 }
 
+/**
+ * Get IDP connection for email domain (optional)
+ * Returns undefined to let Auth0 use Home Realm Discovery
+ */
 export function getConnectionForEmail(email: string): string | undefined {
 	const domain = getEmailDomain(email);
-	
-	// This would typically come from your Auth0 configuration
-	// For now, we'll use a simple mapping
-	const domainMappings: Record<string, string> = {
-		'company1.com': 'google-oauth2',
-		'company2.com': 'windowslive',
-		'company3.com': 'okta'
-	};
-	
-	return domainMappings[domain];
-}
-
-export function getOrganizationForEmail(email: string): string | undefined {
-	const domain = getEmailDomain(email);
-	
-	// This would typically come from your database or Auth0 configuration
-	const domainMappings: Record<string, string> = {
-		'company1.com': 'org_company1',
-		'company2.com': 'org_company2',
-		'company3.com': 'org_company3'
-	};
-	
-	return domainMappings[domain];
+	return emailDomainToConnection[domain];
 }
 
 export function generateState(): string {

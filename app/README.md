@@ -8,7 +8,7 @@ This POC demonstrates core Auth0 capabilities:
 
 ### Authentication & Multi-Tenancy
 ✅ **OIDC Authentication with PKCE**: Secure authorization code flow with proof key for code exchange  
-✅ **Email Domain-Based Routing**: Automatically routes users to their Identity Provider based on email domain  
+✅ **Auth0 Home Realm Discovery**: Auth0 automatically detects IDP and Organization from email domain  
 ✅ **Auth0 Organizations**: Multi-tenant architecture using Auth0's Organizations feature  
 ✅ **Secure Session Management**: JWT-based sessions with HTTP-only cookies
 
@@ -288,9 +288,11 @@ src/
 
 - **[SETUP.md](./SETUP.md)** - Initial setup and configuration guide
 - **[AUTH0_CHECKLIST.md](./AUTH0_CHECKLIST.md)** - Complete Auth0 configuration checklist
+- **[AUTH0_AUTO_DETECTION.md](./AUTH0_AUTO_DETECTION.md)** - How Auth0 auto-detects organizations and IDPs
+- **[WHAT_THIS_DEMONSTRATES.md](./WHAT_THIS_DEMONSTRATES.md)** - Overview of Auth0 features demonstrated
+- **[SSO_GUIDE.md](./SSO_GUIDE.md)** - Single Sign-On implementation details
 - **[DEPLOYMENT.md](./DEPLOYMENT.md)** - GitHub deployment and secrets management
 - **[VERCEL_DEPLOYMENT.md](./VERCEL_DEPLOYMENT.md)** - Vercel-specific deployment guide
-- **[SSO_GUIDE.md](./SSO_GUIDE.md)** - Single Sign-On implementation details
 - **[PROJECT_SUMMARY.md](./PROJECT_SUMMARY.md)** - Technical architecture overview
 
 ## Production Deployment
