@@ -1,109 +1,46 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
 
-	let email = '';
-	let loading = false;
-	let error = data.error || '';
-
-	async function handleLogin() {
-		if (!email) {
-			error = 'Please enter your email address';
-			return;
-		}
-
-		// Simple email validation
-		if (!email.includes('@')) {
-			error = 'Please enter a valid email address';
-			return;
-		}
-
-		loading = true;
-		error = '';
-
-		try {
-			const response = await fetch('/api/auth/login', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ email })
-			});
-
-			const data = await response.json();
-
-			if (response.ok && data.authorizationUrl) {
-				// Redirect to Auth0
-				window.location.href = data.authorizationUrl;
-			} else {
-				error = data.error || 'Failed to initiate login';
-				loading = false;
-			}
-		} catch (err) {
-			error = 'An error occurred. Please try again.';
-			loading = false;
-		}
-	}
-
-	function handleKeyPress(event: KeyboardEvent) {
-		if (event.key === 'Enter') {
-			handleLogin();
-		}
+	function handleRetry() {
+		// Redirect back to Auth0 login
+		window.location.href = '/api/auth/login';
 	}
 </script>
 
 <svelte:head>
-	<title>Login - Auth0 Multi-Tenant POC</title>
+	<title>Authentication Error - Auth0 Multi-Tenant POC</title>
 </svelte:head>
 
 <div class="container">
 	<div class="login-card">
 		<div class="header">
-			<h1>Welcome</h1>
-			<p>Sign in to your organization</p>
+			<h1>Authentication Error</h1>
+			<p>Something went wrong during sign in</p>
 		</div>
 
-		{#if error}
-			<div class="error-message">
-				{#if error === 'invalid_state'}
-					Invalid request. Please try again.
-				{:else if error === 'token_exchange_failed'}
-					Authentication failed. Please try again.
-				{:else if error === 'authentication_failed'}
-					Authentication failed. Please contact support.
-				{:else}
-					{error}
-				{/if}
-			</div>
-		{/if}
+		<div class="error-message">
+			{#if data.error === 'invalid_state'}
+				Invalid request. Please try again.
+			{:else if data.error === 'token_exchange_failed'}
+				Authentication failed. Please try again.
+			{:else if data.error === 'authentication_failed'}
+				Authentication failed. Please contact support.
+			{:else}
+				{data.error}
+			{/if}
+		</div>
 
 		<div class="form">
-			<label for="email">Email Address</label>
-			<input
-				id="email"
-				type="email"
-				bind:value={email}
-				on:keypress={handleKeyPress}
-				placeholder="you@company.com"
-				disabled={loading}
-				autocomplete="email"
-			/>
-
-			<button on:click={handleLogin} disabled={loading}>
-				{#if loading}
-					Signing in...
-				{:else}
-					Sign In
-				{/if}
+			<button on:click={handleRetry} class="login-btn">
+				Try Again
 			</button>
 		</div>
 
 		<div class="info">
 			<p>
-				Your organization's identity provider will be automatically detected based on your email
-				domain.
+				If this problem persists, please contact your system administrator.
 			</p>
 		</div>
 	</div>
@@ -169,51 +106,27 @@
 		gap: 16px;
 	}
 
-	label {
-		font-size: 14px;
-		font-weight: 500;
-		color: #333;
-	}
-
-	input {
-		padding: 12px 16px;
-		border: 1px solid #ddd;
-		border-radius: 6px;
-		font-size: 16px;
-		transition: border-color 0.2s;
-	}
-
-	input:focus {
-		outline: none;
-		border-color: #667eea;
-		box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-	}
-
-	input:disabled {
-		background: #f5f5f5;
-		cursor: not-allowed;
-	}
-
-	button {
-		padding: 12px 24px;
+	.login-btn {
+		padding: 16px 32px;
 		background: #667eea;
 		color: white;
 		border: none;
-		border-radius: 6px;
-		font-size: 16px;
+		border-radius: 8px;
+		font-size: 18px;
 		font-weight: 600;
 		cursor: pointer;
-		transition: background 0.2s;
-		margin-top: 8px;
+		transition: all 0.2s;
+		box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 	}
 
-	button:hover:not(:disabled) {
+	.login-btn:hover {
 		background: #5568d3;
+		transform: translateY(-2px);
+		box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
 	}
 
-	button:disabled {
-		background: #aaa;
-		cursor: not-allowed;
+	.login-btn:active {
+		transform: translateY(0);
 	}
 
 	.info {

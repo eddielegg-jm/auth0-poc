@@ -5,27 +5,33 @@ This POC demonstrates Auth0's flexible organization detection and selection capa
 ## 🎯 How It Works
 
 ### Scenario 1: User Belongs to One Organization
-1. User enters email and logs in
-2. Auth0 authenticates the user
-3. Application fetches user's organizations from Auth0
-4. **Auto-selects** the single organization
-5. Updates session with organization context
-6. User sees dashboard with organization details
+1. User visits homepage
+2. Application detects no session → Auto-redirects to Auth0
+3. User enters credentials on Auth0's page
+4. Auth0 authenticates the user
+5. Application fetches user's organizations from Auth0
+6. **Auto-selects** the single organization
+7. Updates session with organization context
+8. User sees dashboard with organization details
 
 ### Scenario 2: User Belongs to Multiple Organizations
-1. User enters email and logs in
-2. Auth0 authenticates the user
-3. Application fetches user's organizations from Auth0
-4. **Shows organization selection UI**
-5. User clicks on desired organization
-6. Session updated with selected organization
-7. Dashboard reloads with organization context
+1. User visits homepage
+2. Application detects no session → Auto-redirects to Auth0
+3. User enters credentials on Auth0's page
+4. Auth0 authenticates the user
+5. Application fetches user's organizations from Auth0
+6. **Shows organization selection UI**
+7. User clicks on desired organization
+8. Session updated with selected organization
+9. Dashboard reloads with organization context
 
 ### Scenario 3: User Belongs to Zero Organizations
-1. User enters email and logs in
-2. Auth0 authenticates the user
-3. Application fetches user's organizations (empty list)
-4. Dashboard shows "not a member of any organizations"
+1. User visits homepage
+2. Application detects no session → Auto-redirects to Auth0
+3. User enters credentials on Auth0's page
+4. Auth0 authenticates the user
+5. Application fetches user's organizations (empty list)
+6. Dashboard shows "not a member of any organizations"
 
 ## 🔧 Implementation Details
 
@@ -75,14 +81,16 @@ Responsibilities:
 
 ## 🎨 User Experience
 
-### Login Flow (No Organization Specified)
+### Login Flow (Automatic Redirect)
 ```
-1. Homepage → Enter email: user@company.com
-2. Click "Sign In"
-3. Redirect to Auth0
-4. Auth0 authenticates (may auto-detect org via email domain)
-5. Callback to /api/auth/callback
-6. Redirect to /dashboard
+1. User visits homepage (/)
+2. Application detects no valid session
+3. Automatic redirect to Auth0 Universal Login
+4. User enters credentials on Auth0's page
+5. Auth0 authenticates (may auto-detect org via email domain)
+6. Callback to /api/auth/callback
+7. Redirect to /dashboard
+8. Dashboard detects organization membership and handles selection
 ```
 
 ### Organization Selection (Multiple Orgs)

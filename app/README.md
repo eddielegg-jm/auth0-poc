@@ -136,31 +136,13 @@ pnpm run dev
 
 The application will be available at `http://localhost:5173`
 
-## Usage Flow
+## How to Use
 
-### 1. Login
-
-1. Navigate to `http://localhost:5173`
-2. Enter your email address
-3. The application will automatically:
-   - Detect your email domain
-   - Route you to the appropriate IDP
-   - Associate you with the correct organization
-
-### 2. Dashboard
-
-After successful authentication:
-- View your user profile information
-- See all organizations you belong to
-- View organization member counts
-- Access organization details
-
-### 3. Invite Users
-
-1. From the dashboard, click "Invite Member" on any organization card
-2. Enter the email address of the user you want to invite
-3. The user will receive an invitation email from Auth0
-4. They can accept the invitation and join the organization
+1. Visit the application homepage
+2. You'll be automatically redirected to Auth0's Universal Login page
+3. Enter your credentials on Auth0's secure login page
+4. Auth0 will automatically detect your organization and identity provider
+5. After authentication, you'll be redirected back to the dashboard
 
 ## Project Structure
 
@@ -200,11 +182,18 @@ app/
 
 The application uses email domains to automatically determine which Identity Provider to use:
 
-1. User enters their email on the login page
-2. The server extracts the domain (e.g., `user@company1.com` → `company1.com`)
-3. Domain is matched to a configured IDP connection
-4. Auth0 authorization URL is built with the appropriate connection parameter
-5. User is redirected directly to their organization's IDP
+## Authentication Flow
+
+1. User visits the application homepage
+2. Application checks for valid session - if none, automatically redirects to Auth0's Universal Login
+3. User enters their credentials on Auth0's secure page
+4. Auth0 uses Home Realm Discovery to detect:
+   - Identity Provider (Google, Microsoft, etc.)
+   - Organization (based on email domain configuration)
+5. Auth0 authenticates the user with the detected IDP
+6. After successful authentication, user is redirected back with session
+7. Session includes user info and organization context
+8. Application detects organization membership and handles selection
 
 ### Organization Management
 
@@ -262,29 +251,37 @@ pnpm run dev
 src/
 ├── lib/
 │   ├── config/
-│   │   └── auth0.ts           # Auth0 configuration & domain mappings
-│   ├── rbac/
-│   │   └── roles.ts           # RBAC implementation
+│   │   └── auth0.ts           # Auth0 configuration
 │   ├── server/
 │   │   ├── auth0.ts           # Management API client
-│   │   ├── auth-utils.ts      # Auth utilities
-│   │   ├── session.ts         # Session management
-│   │   └── user-management.ts # User creation & management
+│   │   ├── auth-utils.ts      # PKCE utilities
+│   │   └── session.ts         # Session management
 │   └── stores/
 │       └── auth.ts            # Client-side auth store
 ├── routes/
+│   ├── +page.server.ts        # Auto-redirect to Auth0 (or show errors)
+│   ├── +page.svelte           # Error display page
 │   ├── api/
 │   │   ├── auth/              # Authentication endpoints
 │   │   │   ├── callback/      # OAuth callback handler
 │   │   │   ├── login/         # Login initiation
 │   │   │   └── logout/        # Logout handler
-│   │   └── invite/            # User invitation API
-│   ├── admin/                 # Admin console (RBAC protected)
-│   ├── dashboard/             # Main dashboard
+│   │   ├── invite/            # User invitation API
+│   │   └── select-organization/ # Organization selection API
+│   ├── dashboard/             # Main dashboard with org selection
 │   ├── internal-app-1/        # CRM System (SSO enabled)
 │   └── internal-app-2/        # Analytics Platform (SSO enabled)
 └── app.html                   # HTML template
 ```
+
+### Key Routes
+
+- **`/`** - Checks for session; auto-redirects to Auth0 login or shows authentication errors
+- **`/dashboard`** - Main dashboard with smart organization detection and selection
+- **`/internal-app-1`** & **`/internal-app-2`** - SSO-enabled internal applications
+- **`/api/auth/login`** - Initiates Auth0 OIDC flow with PKCE
+- **`/api/auth/callback`** - Handles Auth0 callback and establishes session
+- **`/api/select-organization`** - Updates session with selected organization
 
 ## Documentation
 

@@ -4,11 +4,17 @@ import { getSession } from '$lib/server/session';
 export const load: ServerLoad = async (event) => {
 	const session = getSession(event);
 	
+	// If user has a valid session, redirect to dashboard
 	if (session && session.user) {
 		throw redirect(303, '/dashboard');
 	}
 
-	return {
-		error: event.url.searchParams.get('error')
-	};
+	// If there's an error from Auth0, show the error page
+	const error = event.url.searchParams.get('error');
+	if (error) {
+		return { error };
+	}
+
+	// No session and no error - redirect to Auth0 login
+	throw redirect(303, '/api/auth/login');
 };
