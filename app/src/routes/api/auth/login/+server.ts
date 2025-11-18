@@ -79,7 +79,10 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 
 		throw redirect(302, authorizationUrl);
 	} catch (error) {
-		if (error instanceof Response) throw error;
+		// Re-throw redirects - they're not actually errors
+		if (error instanceof Response && error.status >= 300 && error.status < 400) {
+			throw error;
+		}
 		console.error('Login error:', error);
 		throw redirect(302, '/?error=login_failed');
 	}
