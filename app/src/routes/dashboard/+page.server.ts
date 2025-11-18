@@ -23,18 +23,22 @@ export const load: ServerLoad = async (event) => {
 				const org = organizations[0];
 				
 				// Update session with selected organization
-				setSession(event, {
+				const updatedSession = {
 					...session,
 					user: {
 						...session.user,
 						org_id: org.id,
 						org_name: org.display_name || org.name
 					}
-				});
+				};
+				setSession(event, updatedSession);
 
-				// Redirect to refresh with org context
-				throw redirect(303, '/dashboard');
-			} else {
+				// Update the local session variable to use the updated data
+				session.user.org_id = org.id;
+				session.user.org_name = org.display_name || org.name;
+				
+				// Continue with the updated session instead of redirecting
+			} else if (organizations.length > 1) {
 				// Multiple organizations - show selection UI
 				return {
 					user: session.user,
