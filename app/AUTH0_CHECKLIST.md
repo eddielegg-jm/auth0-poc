@@ -21,57 +21,75 @@ Use this checklist to ensure your Auth0 account is properly configured for this 
 13. ☐ Set **Allowed Web Origins**: `http://localhost:5173`
 14. ☐ Click **Save Changes**
 
-## ☐ Step 2: Set Up Organizations
+## ☐ Step 2: Set Up Organizations (Critical for Auto-Detection)
 
+Organizations are the foundation of multi-tenancy. Auth0 will automatically route users to the correct organization based on email domain configuration.
+
+### Create Each Organization:
 1. ☐ Go to **Organizations** in the Auth0 Dashboard
 2. ☐ Click **Create Organization**
-
-### For Each Organization:
-3. ☐ Enter **Organization Name** (e.g., "Company 1")
-4. ☐ Enter **Display Name** (e.g., "Company One")
+3. ☐ Enter **Organization Name** (e.g., "company-one") - used in URLs, lowercase recommended
+4. ☐ Enter **Display Name** (e.g., "Company One") - shown to users
 5. ☐ Click **Create**
-6. ☐ Copy **Organization ID** (starts with `org_`)
+6. ☐ Copy **Organization ID** (starts with `org_`) - you'll need this for testing
+
+### Configure Email Domains (Required for Auto-Detection):
+7. ☐ Go to organization's **Settings** tab
+8. ☐ Scroll to **Email Domains** section
+9. ☐ Click **Add Domain**
+10. ☐ Enter the email domain (e.g., `company1.com`) - **without** the @ symbol
+11. ☐ Click **Save**
+12. ☐ Repeat for additional domains this organization uses
+
+**✨ This is the magic!** When users log in with `user@company1.com`, Auth0 automatically knows they belong to this organization. No code changes needed!
 
 ### Configure Organization Connections:
-7. ☐ Go to organization's **Connections** tab
-8. ☐ Click **Enable Connections**
-9. ☐ Select your Identity Provider (Google, Microsoft, etc.)
-10. ☐ Click **Enable**
+13. ☐ Go to organization's **Connections** tab
+14. ☐ Click **Enable Connections**
+15. ☐ Select the Identity Provider(s) this organization should use (Google, Microsoft, etc.)
+16. ☐ Click **Enable**
+17. ☐ Only enabled connections will be available for this organization's users
 
-### Configure Email Domains (for Auto-Detection):
-11. ☐ Go to organization's **Settings** tab
-12. ☐ Under **Email Domains**, add the email domains for this organization (e.g., `company1.com`)
-13. ☐ This allows Auth0 to automatically route users to the correct organization based on their email
-14. ☐ No application-side configuration needed!
+### Enable Auto-Membership (Optional but Recommended):
+18. ☐ Go to organization's **Settings** tab
+19. ☐ Enable **Auto-membership** toggle
+20. ☐ This automatically adds users with matching email domains to the organization
+21. ☐ Users won't need an invitation - they're added on first login
 
 ### Repeat for Additional Organizations:
-15. ☐ Create Organization 2 with its email domains
-16. ☐ Create Organization 3 with its email domains
-17. ☐ Configure connections for each
+22. ☐ Create Organization 2 with its email domains and connections
+23. ☐ Create Organization 3 with its email domains and connections
+24. ☐ Each organization can have different IDPs and settings
 
 ## ☐ Step 3: Configure Identity Providers
 
+Identity Providers (IDPs) are the authentication sources (Google, Microsoft, etc.). Auth0 will automatically route users to the correct IDP based on which connections are enabled for their organization.
+
 ### For Google OAuth:
 1. ☐ Go to **Authentication** → **Social**
-2. ☐ Click **Create Connection**
+2. ☐ Click **Create Connection** (or use existing if already created)
 3. ☐ Select **Google**
 4. ☐ Enter your Google OAuth credentials (or use Auth0's dev keys for testing)
 5. ☐ Enable **Email** and **Profile** scopes
 6. ☐ Click **Create**
-7. ☐ Note the connection name (e.g., "google-oauth2")
-8. ☐ (Optional) Add to `src/lib/config/auth0.ts` in `emailDomainToConnection` if you want explicit mapping
-   - Otherwise, Auth0 will auto-detect based on organization connections
+7. ☐ Note the connection name (typically "google-oauth2")
 
 ### For Microsoft OAuth:
 1. ☐ Go to **Authentication** → **Social**
 2. ☐ Click **Create Connection**
 3. ☐ Select **Microsoft**
-4. ☐ Configure Azure AD settings
-5. ☐ Note the connection name (e.g., "windowslive" or "microsoft")
-6. ☐ Add to mappings
+4. ☐ Configure Azure AD settings (or use dev keys)
+5. ☐ Click **Create**
+6. ☐ Note the connection name (typically "windowslive")
 
 ### For Other IDPs:
-☐ Repeat similar steps for Okta, SAML, etc.
+☐ Repeat similar steps for Okta, SAML, GitHub, LinkedIn, etc.
+
+### Important Notes:
+- ✅ **No code mapping needed!** Auth0 auto-detects the IDP based on organization connections
+- ✅ Each organization can have different IDPs enabled
+- ✅ If an organization has multiple IDPs enabled, Auth0 will show a login page for users to choose
+- ℹ️ (Optional) You can add explicit IDP mappings in `src/lib/config/auth0.ts` if needed for special cases
 
 ## ☐ Step 4: Create Management API Application
 
