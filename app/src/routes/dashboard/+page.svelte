@@ -228,11 +228,28 @@
 					</a>
 				</div>
 
+				<div class="app-card production-app">
+					<a href="https://auth0-poc-internal.vercel.app/" class="app-link">
+						<div class="app-icon">🏢</div>
+						<div class="app-details">
+							<h3>Production Internal App</h3>
+							<p>Single-tenant app scoped to your organization</p>
+							<div class="app-badge production">
+								<span class="badge-dot"></span>
+								Organization Scoped
+							</div>
+						</div>
+						<svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+						</svg>
+					</a>
+				</div>
+
 				<div class="sso-info">
 					<div class="info-icon">💡</div>
 					<div>
 						<strong>How SSO Works:</strong>
-						<p>When you click these links, Auth0 will check your existing session and automatically log you in without prompting for credentials. Watch for the green notification!</p>
+						<p>When you click these links, Auth0 will check your existing session and automatically log you in without prompting for credentials. The production app is restricted to organization <code>org_v5DsB07TH5m7Icci</code> only.</p>
 					</div>
 				</div>
 			</div>
@@ -544,6 +561,20 @@
 		color: #667eea;
 	}
 
+	.app-card.production-app {
+		border: 2px solid #764ba2;
+		background: linear-gradient(135deg, #fef5ff 0%, #f3e5ff 100%);
+	}
+
+	.app-card.production-app:hover {
+		box-shadow: 0 8px 24px rgba(118, 75, 162, 0.25);
+		border-color: #667eea;
+	}
+
+	.app-badge.production {
+		background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+	}
+
 	.sso-info {
 		background: linear-gradient(135deg, #e3f2fd 0%, #e1f5fe 100%);
 		border-radius: 12px;
@@ -551,6 +582,15 @@
 		display: flex;
 		gap: 16px;
 		border-left: 4px solid #2196f3;
+	}
+
+	.sso-info code {
+		background: white;
+		padding: 2px 6px;
+		border-radius: 3px;
+		font-family: monospace;
+		font-size: 13px;
+		color: #d32f2f;
 	}
 
 	.info-icon {
