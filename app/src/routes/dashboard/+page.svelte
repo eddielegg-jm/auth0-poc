@@ -189,6 +189,63 @@
 				</div>
 			</div>
 
+			<!-- Roles & Permissions Section -->
+			{#if data.userRolesAndPermissions && (data.userRolesAndPermissions.roles.length > 0 || data.userRolesAndPermissions.permissions.length > 0)}
+				<div class="roles-permissions-section">
+					<h2>🔐 Your Access in {data.user.org_name || 'This Organization'}</h2>
+					
+					<div class="roles-permissions-grid">
+						<!-- Roles Card -->
+						<div class="roles-card">
+							<h3>
+								<svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+								</svg>
+								Roles
+							</h3>
+							{#if data.userRolesAndPermissions.roles.length > 0}
+								<div class="roles-list">
+									{#each data.userRolesAndPermissions.roles as role}
+										<div class="role-item">
+											<div class="role-name">{role.name}</div>
+											{#if role.description}
+												<div class="role-description">{role.description}</div>
+											{/if}
+										</div>
+									{/each}
+								</div>
+							{:else}
+								<p class="empty-state">No roles assigned</p>
+							{/if}
+						</div>
+
+						<!-- Permissions Card -->
+						<div class="permissions-card">
+							<h3>
+								<svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+								</svg>
+								Permissions
+							</h3>
+							{#if data.userRolesAndPermissions.permissions.length > 0}
+								<div class="permissions-list">
+									{#each data.userRolesAndPermissions.permissions as permission}
+										<div class="permission-item">
+											<code class="permission-name">{permission.permission_name}</code>
+											{#if permission.resource_server_name}
+												<div class="permission-api">{permission.resource_server_name}</div>
+											{/if}
+										</div>
+									{/each}
+								</div>
+							{:else}
+								<p class="empty-state">No permissions assigned</p>
+							{/if}
+						</div>
+					</div>
+				</div>
+			{/if}
+
 			<!-- Internal Apps Section -->
 			<div class="internal-apps-section">
 				<h2>🚀 Test SSO with Internal Apps</h2>
@@ -976,5 +1033,101 @@
 		border-radius: 12px;
 		font-size: 12px;
 		font-weight: 500;
+	}
+
+	/* Roles & Permissions Section */
+	.roles-permissions-section {
+		margin-bottom: 40px;
+	}
+
+	.roles-permissions-section h2 {
+		font-size: 24px;
+		margin: 0 0 24px 0;
+		color: #1a1a1a;
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.roles-permissions-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		gap: 24px;
+	}
+
+	.roles-card,
+	.permissions-card {
+		background: white;
+		border-radius: 12px;
+		padding: 24px;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+	}
+
+	.roles-card h3,
+	.permissions-card h3 {
+		margin: 0 0 20px 0;
+		font-size: 18px;
+		color: #1a1a1a;
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.section-icon {
+		width: 20px;
+		height: 20px;
+		color: #667eea;
+	}
+
+	.roles-list,
+	.permissions-list {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	.role-item {
+		padding: 12px 16px;
+		background: #f8f9ff;
+		border-radius: 8px;
+		border-left: 3px solid #667eea;
+	}
+
+	.role-name {
+		font-weight: 600;
+		color: #1a1a1a;
+		margin-bottom: 4px;
+	}
+
+	.role-description {
+		font-size: 14px;
+		color: #666;
+	}
+
+	.permission-item {
+		padding: 10px 14px;
+		background: #f5f5f5;
+		border-radius: 6px;
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+
+	.permission-name {
+		font-family: 'Monaco', 'Courier New', monospace;
+		font-size: 13px;
+		color: #667eea;
+		font-weight: 500;
+	}
+
+	.permission-api {
+		font-size: 12px;
+		color: #999;
+	}
+
+	.empty-state {
+		color: #999;
+		font-style: italic;
+		margin: 0;
 	}
 </style>

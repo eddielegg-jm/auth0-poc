@@ -1,0 +1,77 @@
+# Copy this file to terraform.tfvars and fill in your actual values
+# DO NOT commit terraform.tfvars to git!
+
+auth0_domain = "dev-57ctxx7z8j5mdir1.us.auth0.com"
+
+# Get these from Auth0 Dashboard -> Applications -> Auth0 Management API
+auth0_management_client_id     = "EuJHc5oLY9zjntNQs6OAvSoUJDH5oh3F"
+auth0_management_client_secret = "C0_t58AdO08ZWxd43KM2ap_AAk7oQLU6ebz1Ib4lAwM-e2suGTyOvJH0rO16ZHDa"
+
+# GitHub OAuth App credentials
+# Create at: https://github.com/settings/developers
+github_client_id     = "your-github-oauth-app-client-id"
+github_client_secret = "your-github-oauth-app-client-secret"
+
+# Google OAuth credentials
+# Create at: https://console.cloud.google.com/apis/credentials
+google_client_id     = "your-google-client-id.apps.googleusercontent.com"
+google_client_secret = "your-google-client-secret"
+
+# Application URLs (optional - defaults are provided)
+# console_app_urls = {
+#   callback_urls = [
+#     "http://localhost:5173/api/auth/callback",
+#     "https://auth0-poc.vercel.app/api/auth/callback"
+#   ]
+#   logout_urls = [
+#     "http://localhost:5173",
+#     "https://auth0-poc.vercel.app"
+#   ]
+#   web_origins = [
+#     "http://localhost:5173",
+#     "https://auth0-poc.vercel.app"
+#   ]
+# }
+
+# internal_app_urls = {
+#   callback_urls = [
+#     "http://localhost:3001/api/auth/callback",
+#     "https://auth0-poc-internal.vercel.app/api/auth/callback"
+#   ]
+#   logout_urls = [
+#     "http://localhost:3001",
+#     "https://auth0-poc-internal.vercel.app"
+#   ]
+#   web_origins = [
+#     "http://localhost:3001",
+#     "https://auth0-poc-internal.vercel.app"
+#   ]
+# }
+
+# Organizations (optional - defaults are provided)
+# organizations = {
+#   org-01 = {
+#     display_name = "Organization 01"
+#     branding = {
+#       colors = {
+#         primary         = "#4F46E5"
+#         page_background = "#FFFFFF"
+#       }
+#     }
+#     metadata = {
+#       tier = "enterprise"
+#     }
+#   }
+#   org-02 = {
+#     display_name = "Organization 02"
+#     branding = {
+#       colors = {
+#         primary         = "#7C3AED"
+#         page_background = "#FFFFFF"
+#       }
+#     }
+#     metadata = {
+#       tier = "business"
+#     }
+#   }
+# }

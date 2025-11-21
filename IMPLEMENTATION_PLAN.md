@@ -41,7 +41,6 @@ This document summarizes the requirements gathered from discussions and prior ch
   * Each instance is a direct OIDC client in Auth0
   * Have their own allowed callback URLs
   * Use Auth0 session for SSO
-  * Enforce tenant scoping via `org_id` in token
 
 * **Identity Providers** (per Org)
 
@@ -57,9 +56,8 @@ This document summarizes the requirements gathered from discussions and prior ch
 * Auth0 fully handles authentication.
 * Universal Login used for all flows.
 * User authenticates via their connection (IdP).
-* After authentication, Auth0 determines which organizations the user belongs to.
-* If multiple organizations: console displays organization picker.
-* If single organization: automatically set in session.
+* Console app controls RBAC for organization authorization
+* Customer application instances are controlled with Auth0 organization connections
 
 ## 3.2 Authorization / RBAC
 

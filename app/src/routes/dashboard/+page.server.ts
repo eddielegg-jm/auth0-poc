@@ -1,6 +1,6 @@
 import { redirect, type ServerLoad } from '@sveltejs/kit';
 import { getSession, setSession } from '$lib/server/session';
-import { getUserOrganizations, getOrganizationMembers, getOrganization } from '$lib/server/auth0';
+import { getUserOrganizations, getOrganizationMembers, getOrganization, getUserPermissionsInOrganization } from '$lib/server/auth0';
 
 export const load: ServerLoad = async (event) => {
 	const session = getSession(event);
@@ -59,14 +59,21 @@ export const load: ServerLoad = async (event) => {
 
 		// Get current organization details if user has one selected
 		let currentOrg = null;
+		let userRolesAndPermissions = null;
 		if (session.user.org_id) {
 			currentOrg = await getOrganization(session.user.org_id);
+			// Get user's roles and permissions in the current organization
+			userRolesAndPermissions = await getUserPermissionsInOrganization(
+				session.user.sub,
+				session.user.org_id
+			);
 		}
 
 		return {
 			user: session.user,
 			organizations: orgsWithMembers,
 			currentOrg,
+			userRolesAndPermissions,
 			requiresOrgSelection: false
 		};
 	} catch (error) {

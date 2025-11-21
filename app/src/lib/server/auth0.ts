@@ -141,3 +141,71 @@ export async function getOrganizationMembers(orgId: string) {
 		return [];
 	}
 }
+
+export interface Role {
+	id: string;
+	name: string;
+	description?: string;
+}
+
+export interface Permission {
+	permission_name: string;
+	resource_server_identifier: string;
+	resource_server_name?: string;
+}
+
+export async function getUserRolesInOrganization(userId: string, orgId: string): Promise<Role[]> {
+	try {
+		const roles = await makeManagementRequest(
+			`organizations/${encodeURIComponent(orgId)}/members/${encodeURIComponent(userId)}/roles`
+		);
+		return roles;
+	} catch (error) {
+		console.error('Error fetching user roles in organization:', error);
+		return [];
+	}
+}
+
+export async function getRolePermissions(roleId: string): Promise<Permission[]> {
+	try {
+		const permissions = await makeManagementRequest(`roles/${encodeURIComponent(roleId)}/permissions`);
+		return permissions;
+	} catch (error) {
+		console.error('Error fetching role permissions:', error);
+		return [];
+	}
+}
+
+export async function getUserPermissionsInOrganization(
+	userId: string,
+	orgId: string
+): Promise<{ roles: Role[]; permissions: Permission[] }> {
+	try {
+		// Get user's roles in the organization
+		const roles = await getUserRolesInOrganization(userId, orgId);
+
+		// Get permissions for each role
+		const permissionArrays = await Promise.all(
+			roles.map((role) => getRolePermissions(role.id))
+		);
+
+		// Flatten and deduplicate permissions
+		const allPermissions = permissionArrays.flat();
+		const uniquePermissions = Array.from(
+			new Map(
+				allPermissions.map((p) => [
+					`${p.resource_server_identifier}:${p.permission_name}`,
+					p
+				])
+			).values()
+		);
+
+		return {
+			roles,
+			permissions: uniquePermissions
+		};
+	} catch (error) {
+		console.error('Error fetching user permissions in organization:', error);
+		return { roles: [], permissions: [] };
+	}
+}
